@@ -6,7 +6,8 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 public class Meal {
-    private final UUID id;
+
+    private int id;
 
     private LocalDateTime dateTime;
 
@@ -15,14 +16,16 @@ public class Meal {
     private int calories;
 
     public Meal(LocalDateTime dateTime, String description, int calories) {
-        this.id = UUID.randomUUID();
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
     }
 
-    public UUID getId() {
-        return id;
+    public Meal(int id, LocalDateTime dateTime, String description, int calories) {
+        this.id = id;
+        this.dateTime = dateTime;
+        this.description = description;
+        this.calories = calories;
     }
 
     public LocalDateTime getDateTime() {
@@ -45,6 +48,10 @@ public class Meal {
         return dateTime.toLocalTime();
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
@@ -55,5 +62,18 @@ public class Meal {
 
     public void setCalories(int calories) {
         this.calories = calories;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Meal{" +
+                "dateTime=" + dateTime +
+                ", description='" + description + '\'' +
+                ", calories=" + calories +
+                '}';
     }
 }

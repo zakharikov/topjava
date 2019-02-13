@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class MealTo {
 
-    private final UUID id;
+    private int id;
 
     private final LocalDateTime dateTime;
 
@@ -16,7 +16,14 @@ public class MealTo {
     private final boolean excess;
 
     public MealTo(LocalDateTime dateTime, String description, int calories, boolean excess) {
-        this.id = UUID.randomUUID();
+        this.dateTime = dateTime;
+        this.description = description;
+        this.calories = calories;
+        this.excess = excess;
+    }
+
+    public MealTo(int id, LocalDateTime dateTime, String description, int calories, boolean excess) {
+        this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
@@ -33,7 +40,7 @@ public class MealTo {
                 '}';
     }
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
