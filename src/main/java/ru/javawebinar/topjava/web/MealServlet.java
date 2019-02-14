@@ -53,6 +53,6 @@ public class MealServlet extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("idToDelete"));
             meals.delete(id);
         }
-        doGet(req, resp);
+        resp.sendRedirect("meals");
     }
 }
