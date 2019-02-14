@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <html>
@@ -17,6 +17,7 @@
         <th>Описание</th>
         <th>Каллории</th>
 
+        <jsp:useBean id="meals" scope="request" type="java.util.List"/>
         <c:forEach var="meal" items="${meals}">
             <tr style="color:${meal.excess ? 'red' : 'green'}">
                 <td>${meal.id}</td>
@@ -31,6 +32,9 @@
 <h2>CRUD operations</h2>
 
 <form method="post">
+    <label>Id:
+        <input type="number" name="idToUpdate">
+    </label>
     <label>Дата, Время:
         <input type="datetime-local" name="dateTime" required>
     </label>
@@ -40,7 +44,7 @@
     <label>Каллории:
         <input type="number" name="calories" required>
     </label>
-    <button type="submit">Добавить</button>
+    <button type="submit">Добавить/Изменить</button>
 </form>
 
 <form method="post">
@@ -50,33 +54,5 @@
     <button type="submit">Удалить</button>
 </form>
 
-<form method="post">
-    <label>Id:
-        <input type="number" name="idToUpdate" required>
-    </label>
-    <label>Дата, Время:
-        <input type="datetime-local" name="dateTimeToUpdate" required>
-    </label>
-    <label>Описание:
-        <input type="text" name="descriptionToUpdate" required>
-    </label>
-    <label>Каллории:
-        <input type="number" name="caloriesToUpdate" required>
-    </label>
-    <button type="submit">Изменить</button>
-</form>
-
-<form method="post">
-    <label>Id:
-        <input type="number" name="idToRead" required>
-    </label>
-    <button type="submit">Получить</button>
-</form>
-
-<form method="get">
-    <label>Получено:
-        <c:out value="${mealToPrint}"/>
-    </label>
-</form>
 </body>
 </html>

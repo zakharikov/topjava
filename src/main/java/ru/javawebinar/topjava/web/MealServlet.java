@@ -27,38 +27,32 @@ public class MealServlet extends HttpServlet {
         log.debug("redirect to meals");
         List<MealTo> mealsWithExcess = MealsUtil.getWithExcess(meals.getList(), 2000);
         req.setAttribute("meals", mealsWithExcess);
-        getServletContext().getRequestDispatcher("/meals.jsp").forward(req, resp);
+        req.getRequestDispatcher("/meals.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         if (req.getParameter("dateTime") != null && req.getParameter("calories") != null && req.getParameter("description") != null) {
-            LocalDateTime dateTime = LocalDateTime.parse(req.getParameter("dateTime"));
-            int calories = Integer.parseInt(req.getParameter("calories"));
-            String description = req.getParameter("description");
-            Meal meal = new Meal(dateTime, description, calories);
-            meals.create(meal);
-            doGet(req, resp);
-        } else if (req.getParameter("idToDelete") != null && meals.getMap().containsKey(Integer.parseInt(req.getParameter("idToDelete")))) {
+            if (!req.getParameter("idToUpdate").equals("") && meals.read(Integer.parseInt(req.getParameter("idToUpdate"))) != null) {
+                meals.update(
+                        Integer.parseInt(req.getParameter("idToUpdate")),
+                        new Meal(
+                                LocalDateTime.parse(req.getParameter("dateTime")),
+                                req.getParameter("description"),
+                                Integer.parseInt(req.getParameter("calories")
+                                )));
+            } else {
+                meals.create(new Meal(
+                        LocalDateTime.parse(req.getParameter("dateTime")),
+                        req.getParameter("description"),
+                        Integer.parseInt(req.getParameter("calories")
+                        )));
+            }
+        } else if (req.getParameter("idToDelete") != null && meals.read(Integer.parseInt(req.getParameter("idToDelete"))) != null) {
             int id = Integer.parseInt(req.getParameter("idToDelete"));
             meals.delete(id);
-            doGet(req, resp);
-        } else if (req.getParameter("idToUpdate") != null && meals.getMap().containsKey(Integer.parseInt(req.getParameter("idToUpdate")))) {
-            int id = Integer.parseInt(req.getParameter("idToUpdate"));
-            LocalDateTime dateTime = LocalDateTime.parse(req.getParameter("dateTimeToUpdate"));
-            int calories = Integer.parseInt(req.getParameter("caloriesToUpdate"));
-            String description = req.getParameter("descriptionToUpdate");
-            Meal meal = new Meal(dateTime, description, calories);
-            meals.update(id, meal);
-            doGet(req, resp);
-        } else if (req.getParameter("idToRead") != null && meals.getMap().containsKey(Integer.parseInt(req.getParameter("idToRead")))) {
-            int id = Integer.parseInt(req.getParameter("idToRead"));
-            Meal toRead = meals.read(id);
-            req.setAttribute("mealToPrint", toRead.toString());
-            doGet(req, resp);
-        } else {
-            doGet(req, resp);
         }
+        doGet(req, resp);
     }
 }

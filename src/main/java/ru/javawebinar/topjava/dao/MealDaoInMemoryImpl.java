@@ -30,8 +30,9 @@ public class MealDaoInMemoryImpl implements MealDao {
 
     @Override
     public Meal create(Meal meal) {
-        meal.setId(idCounter.incrementAndGet());
-        meals.put(idCounter.get(), meal);
+        int id = idCounter.incrementAndGet();
+        meal.setId(id);
+        meals.put(id, meal);
         return meal;
     }
 
@@ -42,11 +43,9 @@ public class MealDaoInMemoryImpl implements MealDao {
 
     @Override
     public Meal update(int id, Meal meal) {
-        Meal temp = meals.get(id);
-        temp.setCalories(meal.getCalories());
-        temp.setDateTime(meal.getDateTime());
-        temp.setDescription(meal.getDescription());
-        return temp;
+        meal.setId(id);
+        meals.put(id, meal);
+        return meal;
     }
 
     @Override
@@ -56,9 +55,5 @@ public class MealDaoInMemoryImpl implements MealDao {
 
     public List<Meal> getList() {
         return new ArrayList<>(meals.values());
-    }
-
-    public Map<Integer, Meal> getMap() {
-        return new HashMap<>(meals);
     }
 }
