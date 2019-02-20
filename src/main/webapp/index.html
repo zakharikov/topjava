@@ -8,10 +8,16 @@
 <hr>
 <h4>User chooser</h4>
 
-<select name="chooser">
-    <option>1</option>
-    <option>2</option>
-</select>
+
+<form action="meals" method="get" id="form-response">
+    <label>
+        <select name="userId">
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+    </label>
+    <button type="submit">Submit</button>
+</form>
 
 <hr>
 <ul>
@@ -19,14 +25,5 @@
     <li><a href="meals">Meals</a></li>
 </ul>
 
-<!--<form method="get">-->
-
-    <!--<select name="chooser">-->
-        <!--<option>1</option>-->
-        <!--<option>2</option>-->
-    <!--</select>-->
-
-    <!--<input value="meals" type="button" onclick="location.href='meals'" />-->
-<!--</form>-->
 </body>
 </html>

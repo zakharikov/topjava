@@ -26,31 +26,32 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
-    private ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+    private ConfigurableApplicationContext appCtx;
 
-    private MealRestController controller = appCtx.getBean(MealRestController.class);
+    private MealRestController controller;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        controller = appCtx.getBean(MealRestController.class);
     }
 
     @Override
     public void destroy() {
         super.destroy();
+        appCtx.close();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
-        String userId = request.getParameter("userId");
 
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")),
-                getUserId(request));
+                Integer.parseInt(request.getParameter("calories")));
         if (meal.isNew()) {
             log.info("Create {}", meal);
             controller.create(meal);
@@ -64,32 +65,28 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
+        if (request.getParameter("userId") != null) {
+            SecurityUtil.setAuthUser(Integer.parseInt(request.getParameter("userId")));
+        }
 
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
-                int userId = getUserId(request);
-                log.info("Delete {} user {}", id, userId);
+                log.info("Delete {} user {}", id);
                 controller.delete(id);
                 response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, getUserId(request)) :
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
                         controller.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
-            case "dateFilter":
+            case "dateTimeFilter":
                 request.setAttribute("meals",
-                        controller.getFilteredByDate(getDateFrom(request), getDateTo(request))
-                );
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
-                break;
-            case "timeFilter":
-                request.setAttribute("meals",
-                        controller.getFilteredByTime(getTimeFrom(request), getTimeTo(request))
+                        controller.getFilteredByDateAndTime(getDateFrom(request), getDateTo(request), getTimeFrom(request), getTimeTo(request))
                 );
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
@@ -109,28 +106,23 @@ public class MealServlet extends HttpServlet {
         return Integer.parseInt(paramId);
     }
 
-    private int getUserId(HttpServletRequest request) {
-        String paramId = Objects.requireNonNull(request.getParameter("userId"));
-        return Integer.parseInt(paramId);
-    }
-
     private LocalDate getDateFrom(HttpServletRequest request) {
-        String paramId = Objects.requireNonNull(request.getParameter("dateFrom"));
-        return LocalDate.parse(paramId);
+        String paramId = request.getParameter("dateFrom");
+        return paramId.equals("") ? LocalDate.MIN : LocalDate.parse(paramId);
     }
 
     private LocalDate getDateTo(HttpServletRequest request) {
-        String paramId = Objects.requireNonNull(request.getParameter("dateTo"));
-        return LocalDate.parse(paramId);
+        String paramId = request.getParameter("dateTo");
+        return paramId.equals("") ? LocalDate.MAX : LocalDate.parse(paramId);
     }
 
     private LocalTime getTimeFrom(HttpServletRequest request) {
-        String paramId = Objects.requireNonNull(request.getParameter("timeFrom"));
-        return LocalTime.parse(paramId);
+        String paramId = request.getParameter("timeFrom");
+        return paramId.equals("") ? LocalTime.MIN : LocalTime.parse(paramId);
     }
 
     private LocalTime getTimeTo(HttpServletRequest request) {
-        String paramId = Objects.requireNonNull(request.getParameter("timeTo"));
-        return LocalTime.parse(paramId);
+        String paramId = request.getParameter("timeTo");
+        return paramId.equals("") ? LocalTime.MAX : LocalTime.parse(paramId);
     }
 }

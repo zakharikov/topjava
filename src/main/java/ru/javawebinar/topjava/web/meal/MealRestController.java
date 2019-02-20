@@ -15,15 +15,13 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
+import static ru.javawebinar.topjava.web.SecurityUtil.*;
 
 @Controller
 public class MealRestController {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
-
 
     private final MealService service;
 
@@ -34,47 +32,36 @@ public class MealRestController {
 
     public Meal create(Meal meal) {
         log.info("create meal {}", meal);
-        return service.create(meal, authUserId());
+        return service.create(meal);
     }
 
     public void delete(int id) {
         log.info("delete id {}", id);
-        service.delete(id, authUserId());
+        service.delete(id);
     }
 
     public Meal get(int id) {
         log.info("get id {}", id);
-        return service.get(id, authUserId());
+        return service.get(id);
     }
 
     public List<MealTo> getAll() {
         log.info("getAll meals");
-        return MealsUtil.getWithExcess(service.getAll(authUserId()), DEFAULT_CALORIES_PER_DAY);
+        return MealsUtil.getWithExcess(service.getAll(), authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getAllWithoutFilterAndSort() {
-        log.info("getAllWithoutFilterAndSort meals");
-        return MealsUtil.getWithExcess(service.getAllWithoutFilterAndSort(), DEFAULT_CALORIES_PER_DAY);
-    }
-
-    public List<MealTo> getFilteredByDate(LocalDate startDate, LocalDate endDate) {
+    public List<MealTo> getFilteredByDateAndTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         log.info("getFilteredByDate meals");
-        return MealsUtil.getWithExcess(service.getAll(authUserId()), DEFAULT_CALORIES_PER_DAY).stream().filter(mealTo ->
-                DateTimeUtil.isBetweenDate(mealTo.getDateTime().toLocalDate(), startDate, endDate))
-                .collect(Collectors.toList());
-    }
-
-    public List<MealTo> getFilteredByTime(LocalTime startTime, LocalTime endTime) {
-        log.info("getFilteredByTime meals");
-        return MealsUtil.getWithExcess(service.getAll(authUserId()), DEFAULT_CALORIES_PER_DAY).stream().filter(mealTo ->
-                DateTimeUtil.isBetweenTime(mealTo.getDateTime().toLocalTime(), startTime, endTime))
+        return MealsUtil.getWithExcess(service.getAll(), authUserCaloriesPerDay()).stream()
+                .filter(mealTo -> DateTimeUtil.isBetweenDate(mealTo.getDateTime().toLocalDate(), startDate, endDate))
+                .filter(mealTo -> DateTimeUtil.isBetweenTime(mealTo.getDateTime().toLocalTime(), startTime, endTime))
                 .collect(Collectors.toList());
     }
 
     public void update(Meal meal, int id) {
         log.info("update meal {}", meal);
         assureIdConsistent(meal, id);
-        service.create(meal, authUserId());
+        service.create(meal);
     }
 
 }

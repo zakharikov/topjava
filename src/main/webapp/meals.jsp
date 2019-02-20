@@ -39,31 +39,31 @@
     <h2>Meals</h2>
 
     <form method="get">
-        <dl>
-            <dt>From date:</dt>
-            <dd><input type="date" value="" name="dateFrom" required></dd>
-        </dl>
-        <dl>
-            <dt>To date:</dt>
-            <dd><input type="date" value="" name="dateTo" required></dd>
-        </dl>
-        <input type="hidden" name="action" value="dateFilter">
+        <table border="0">
+            <td>
+                <dl>
+                    <dt>From date:</dt>
+                    <dd><input type="date" value="" name="dateFrom"></dd>
+                </dl>
+                <dl>
+                    <dt>To date:</dt>
+                    <dd><input type="date" value="" name="dateTo"></dd>
+                </dl>
+            </td>
+            <td>
+                <dl>
+                    <dt>From time:</dt>
+                    <dd><input type="time" value="" name="timeFrom"></dd>
+                </dl>
+                <dl>
+                    <dt>To time:</dt>
+                    <dd><input type="time" value="" name="timeTo"></dd>
+                </dl>
+            </td>
+        </table>
+        <input type="hidden" name="action" value="dateTimeFilter">
         <button type="submit">Filter</button>
-        <input value="Cancel" type="button" onclick="location.href='meals'" />
-    </form>
-
-    <form method="get">
-        <dl>
-            <dt>From time:</dt>
-            <dd><input type="time" value="" name="timeFrom" required></dd>
-        </dl>
-        <dl>
-            <dt>To time:</dt>
-            <dd><input type="time" value="" name="timeTo" required></dd>
-        </dl>
-        <input type="hidden" name="action" value="timeFilter">
-        <button type="submit">Filter</button>
-        <input value="Cancel" type="button" onclick="location.href='meals'" />
+        <input value="Cancel" type="button" onclick="location.href='meals'"/>
     </form>
 
     <a href="meals?action=create&userId=1">Add Meal</a>
