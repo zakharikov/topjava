@@ -35,4 +35,8 @@ public class InMemoryBaseRepositoryImpl<T extends AbstractBaseEntity> {
     Collection<T> getCollection() {
         return entryMap.values();
     }
+
+    public void setEntryMap(Map<Integer, T> entryMap) {
+        this.entryMap = entryMap;
+    }
 }

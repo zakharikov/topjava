@@ -61,8 +61,8 @@ public class MealServiceTest {
     @Test
     public void getBetweenDateTimes() {
         List<Meal> sorted = service.getBetweenDateTimes(
-                LocalDateTime.of(2015, Month.MAY, 29, 0, 0,0),
-                LocalDateTime.of(2015, Month.MAY, 31, 0, 0,0),
+                LocalDateTime.of(2015, Month.MAY, 29, 0, 0, 0),
+                LocalDateTime.of(2015, Month.MAY, 31, 0, 0, 0),
                 USER_ID);
         assertMatch(sorted, MEALS_SORTED);
     }
