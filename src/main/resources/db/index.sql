@@ -1,1 +1,0 @@
-CREATE UNIQUE INDEX datetime_restriction ON meals (date_time); --не понял как ограничить по user_id

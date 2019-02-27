@@ -35,3 +35,5 @@ CREATE TABLE meals
   registered  TIMESTAMP           DEFAULT now() NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+
+CREATE UNIQUE INDEX datetime_restriction ON meals (date_time, user_id);

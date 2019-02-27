@@ -30,9 +30,9 @@ public class MealServiceTest {
 
     @Test
     public void create() {
-        Meal newMeal = new Meal(null, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500);
+        Meal newMeal = new Meal(MEAL);
         Meal created = service.create(newMeal, 100000);
-        newMeal.setId(newMeal.getId());
+        newMeal.setId(created.getId());
         assertMatch(created, newMeal);
     }
 
@@ -44,7 +44,7 @@ public class MealServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void getNotFound() throws Exception {
-        service.get(1, USER_ID);
+        service.get(MEAL_ID - 1, USER_ID);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class MealServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void deletedNotFound() throws Exception {
-        service.delete(1, USER_ID);
+        service.delete(ANOTHER_USER_MEAL_ID, USER_ID);
     }
 
     @Test
@@ -84,8 +84,8 @@ public class MealServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void updateNotFound() throws Exception {
-        Meal newMeal = MEAL;
-        newMeal.setId(1);
+        Meal newMeal = new Meal(MEAL);
+        newMeal.setId(ANOTHER_USER_MEAL_ID);
         service.update(newMeal, USER_ID);
     }
 }
